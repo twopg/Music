@@ -1,6 +1,6 @@
 import searchYT, { VideoSearchResult } from 'yt-search';
+import { TextChannel, VoiceChannel } from 'discord.js';
 import Q from './q';
-import { VoiceChannel } from 'discord.js';
 export declare class Player {
     private options;
     readonly q: Q<searchYT.VideoSearchResult>;
@@ -9,6 +9,10 @@ export declare class Player {
     get isPlaying(): import("discord.js").StreamDispatcher;
     /** Position in ms of current track. */
     get position(): number;
+    /** Text channel that the player is connected to. */
+    get textChannel(): TextChannel;
+    /** Voice channel that the player is connected to. */
+    get voiceChannel(): VoiceChannel;
     constructor(options: PlayerOptions);
     /** Join a voice channel. */
     join(): Promise<void>;
@@ -17,7 +21,8 @@ export declare class Player {
     /** Move player to another channel. */
     move(voiceChannel: VoiceChannel): Promise<void>;
     /** Play track from YouTube. */
-    play(query: string): Promise<void>;
+    play(query: string): Promise<searchYT.VideoSearchResult>;
+    private playTrack;
     /** Set volume from 0 - 200 */
     setVolume(amount: number): Promise<void>;
     /** Stop playing and clear queue. */
@@ -30,6 +35,7 @@ export declare class Player {
     skip(count?: number): Promise<void>;
 }
 export interface PlayerOptions {
+    textChannel: TextChannel;
     voiceChannel: VoiceChannel;
 }
 export declare type Track = VideoSearchResult;

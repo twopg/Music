@@ -1,6 +1,6 @@
 {
   "name": "2pg-music",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Discord.js music used for 2PG",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
