@@ -1,7 +1,8 @@
 import searchYT, { VideoSearchResult } from 'yt-search';
 import downloadYT from 'ytdl-core';
+import { Channel, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
 import Q from './q';
-import { VoiceChannel, VoiceConnection } from 'discord.js';
+import { emitter } from './events';
 
 export class Player {  
   readonly q = new Q<Track>();
@@ -17,7 +18,24 @@ export class Player {
     return this.connection?.dispatcher.streamTime;
   }
 
-  constructor(private options: PlayerOptions) {}
+  /** Text channel that the player is connected to. */
+  get textChannel() {
+    return this.options.textChannel;
+  }
+  /** Voice channel that the player is connected to. */
+  get voiceChannel() {
+    return this.options.voiceChannel;
+  }
+
+  constructor(private options: PlayerOptions) {
+    emitter.on('end', async () => {
+      this.q.dequeue();
+      if (this.q.isEmpty) return;
+      
+      const nextTrack = this.q.peek();
+      await this.playTrack(nextTrack);
+    });
+  }
 
   /** Join a voice channel. */
   async join() {
@@ -26,7 +44,10 @@ export class Player {
 
   /** Leave a voice channel. */
   async leave() {
+    this.stop();
+
     this.options.voiceChannel.leave();
+    this.options.voiceChannel = null;
     this.connection = null;
   }
 
@@ -44,11 +65,19 @@ export class Player {
 
     await this.join();
 
-    const video = videos[0];
-    this.q.enqueue(video);
+    const track = videos[0];
+    this.q.enqueue(track);
 
-    const stream = downloadYT(video.url, { filter: 'audioonly' });
+    if (!this.isPlaying)
+      this.playTrack(track);
+
+    return track;
+  }
+  private async playTrack(track: Track) {
+    const stream = downloadYT(track.url, { filter: 'audioonly' });
     this.connection?.play(stream, { seek: 0, volume: 1 });
+    
+    emitter.emit('trackStart', this, track);
   }
 
   /** Set volume from 0 - 200 */ 
@@ -68,6 +97,8 @@ export class Player {
 
     while (!this.q.isEmpty)
       this.q.dequeue();
+
+    emitter.emit('queueEnd', this);
   }
 
   /** Pause playback. */
@@ -85,14 +116,19 @@ export class Player {
       throw new TypeError('Not enough items to skip.');
     else if (count <= 0)
       throw new RangeError('Number to skip should be greater than 0');
-
-    const skipped = this.q.length > this.q.length - count;
-    while (!skipped)
+    else if (this.q.length <= 1)
+      throw new TypeError('Cannot skip only one track.');
+    
+    for (let i = 0; i < count; i++)     
       this.q.dequeue();
+      
+    console.log(this.q);    
+    await this.playTrack(this.q.peek());
   }
 }
 
 export interface PlayerOptions {
+  textChannel: TextChannel;
   voiceChannel: VoiceChannel;
 }
 
