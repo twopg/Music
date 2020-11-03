@@ -37,7 +37,7 @@ export class Player {
   
   /** Play track from YouTube. */
   async play(query: string) {
-    const videos = await this.search(query);
+    const { videos } = await searchYT(query);
     if (videos.length <= 0)
       throw new TypeError('No results found.');
 
@@ -48,12 +48,6 @@ export class Player {
 
     const stream = downloadYT(video.url, { filter: 'audioonly' });
     this.connection?.play(stream, { seek: 0, volume: 1 });
-  }
-  
-  /** Search YouTube for tracks. */
-  async search(query: string): Promise<Track[]> {
-    const result = await searchYT(query);
-    return result.videos;
   }
 
   /** Set volume from 0 - 200 */ 

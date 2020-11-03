@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { Player, PlayerOptions, Track } from './player';
+import searchYT from 'yt-search';
 
 export class MusicClient {
   readonly players = new Map<string, Player>();
@@ -11,16 +12,19 @@ export class MusicClient {
     this.emitter.on(event, listener);
   }
 
-  /** Create a player for a guild. */
-  create(options: PlayerOptions) {
-    return this.players
-      .set(options.voiceChannel.guild.id, new Player(options))
-      .get(options.voiceChannel.guild.id);
+  /** Get or create a player for a guild. */
+  get(options: PlayerOptions): Player {
+    const guildId = options.voiceChannel.guild.id;
+    return this.players.get(guildId)
+      ?? this.players
+        .set(guildId, new Player(options))
+        .get(guildId) as Player;
   }
-
-  /** Get player by Guild ID. */
-  get(guildId: string) {
-    return this.players.get(guildId);
+  
+  /** Search YouTube for tracks. */
+  async search(query: string): Promise<Track[]> {
+    const result = await searchYT(query);
+    return result.videos;
   }
 }
 
