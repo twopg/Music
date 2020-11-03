@@ -12,6 +12,9 @@ export class Player {
   get isPlaying() {
     return !this.q.isEmpty && this.connection?.dispatcher;
   }
+  get position() {
+    return this.connection?.dispatcher.streamTime;
+  }
 
   constructor(private options: PlayerOptions) {}
 
@@ -46,6 +49,7 @@ export class Player {
     const stream = downloadYT(video.url, { filter: 'audioonly' });
     this.connection?.play(stream, { seek: 0, volume: 1 });
   }
+  
   /** Search YouTube for tracks. */
   async search(query: string): Promise<Track[]> {
     const result = await searchYT(query);
