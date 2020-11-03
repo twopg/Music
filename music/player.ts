@@ -12,6 +12,7 @@ export class Player {
   get isPlaying() {
     return !this.q.isEmpty && this.connection?.dispatcher;
   }
+  /** Position in ms of current track. */
   get position() {
     return this.connection?.dispatcher.streamTime;
   }

@@ -1,6 +1,5 @@
-export default class Q<T> implements Iterator<T> {
+export default class Q<T> {
   private _items: T[] = [];
-  private counter = 0;
 
   get isEmpty() {
     return this.items.length <= 0;
@@ -24,10 +23,10 @@ export default class Q<T> implements Iterator<T> {
     return this.items[0];
   }
 
-  next(): { done: boolean, value: T } {
-    return {
-      done: false,
-      value: this.items[this.counter++]
+  shuffle() {
+    for (var i = this.length - 1; i > 0; i--) {
+      const rand = Math.floor(Math.random() * (i + 1));
+      [this.items[i], this.items[rand]] = [this.items[rand], this.items[i]]
     }
   }
 }

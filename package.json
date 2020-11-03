@@ -1,17 +1,20 @@
 {
   "name": "2pg-music",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Discord.js music used for 2PG",
-  "main": "client.ts",
+  "main": "lib/main.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "declaration": true,
   "private": false,
   "keywords": [
     "discord",
     "discord music",
     "discord.js music"
   ],
+  "prepublish": "tsc",
   "author": "theADAMJR",
   "license": "ISC",
   "dependencies": {
