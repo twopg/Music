@@ -1,0 +1,37 @@
+{
+	"tags":
+	{
+		"allowUnknownTags" : true
+	},
+	"plugins":[
+		 "plugins/markdown"
+		,"/Users/adamj/AppData/Roaming/npm/node_modules/tsdoc/template/plugins/TSDoc.js"
+	],
+	"opts":
+	{
+		"template"	:"/Users/adamj/AppData/Roaming/npm/node_modules/tsdoc/template",
+		"recurse"	:"true"
+	},
+	"templates" : {
+		"cleverLinks"     : false,
+		"monospaceLinks"  : false
+	},
+	"source":
+	{
+		"includePattern": "(\\.d)?\\.ts$"
+	},
+	"markdown"  : {
+		"parser"   : "flow",
+		"hardwrap" : true
+	},
+	"tsdoc":{
+		"source"		:"/Users/adamj/Documents/Projects/Code/2pg-music/src/",
+		"destination"	:"/Users/adamj/Documents/Projects/Code/2pg-music/docs",
+		"tutorials"		:"",
+		"systemName"	: "2pg-music",
+		"footer"		: "",
+		"copyright"		: "2pg-music Copyright © 2020 adamj.",
+		"outputSourceFiles" : true,
+		"commentsOnly": true
+	}
+}

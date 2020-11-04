@@ -1,5 +1,5 @@
 import { Client, TextChannel } from 'discord.js';
-import { MusicClient, Player, Track } from '../music/client';
+import { MusicClient, Player, Track } from '../src/music/client';
 
 const bot = new Client();
 const music = new MusicClient();

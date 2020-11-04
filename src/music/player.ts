@@ -1,6 +1,6 @@
 import searchYT, { VideoSearchResult } from 'yt-search';
 import downloadYT from 'ytdl-core';
-import { Channel, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
+import { GuildMember, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
 import Q from './q';
 import { emitter } from './events';
 
@@ -12,6 +12,10 @@ export class Player {
   /** Whether the queue is not empty and audio is being emitted. */
   get isPlaying() {
     return !this.q.isEmpty && this.connection?.dispatcher;
+  }
+  /** Whether the player is paused or not. */
+  get isPaused() {
+    return this.connection?.dispatcher.paused;
   }
   /** Position in ms of current track. */
   get position() {
@@ -25,6 +29,10 @@ export class Player {
   /** Voice channel that the player is connected to. */
   get voiceChannel() {
     return this.options.voiceChannel;
+  }
+  /** Guild ID of the player. */
+  get guildId() {
+    return this.options.guildId;
   }
 
   constructor(private options: PlayerOptions) {
@@ -57,8 +65,11 @@ export class Player {
     this.options.voiceChannel = voiceChannel;
   }
   
-  /** Play track from YouTube. */
-  async play(query: string) {
+  /** Play track from YouTube.
+   * @param query Term to search YouTube for tracks.
+   * @param requestor Guild member who requested to play this track.
+  */
+  async play(query: string, requestor?: GuildMember) {
     const { videos } = await searchYT(query);
     if (videos.length <= 0)
       throw new TypeError('No results found.');
@@ -80,7 +91,9 @@ export class Player {
     emitter.emit('trackStart', this, track);
   }
 
-  /** Set volume from 0 - 200 */ 
+  /** Set volume of player.
+   * @param amount Value from 0 - 200.
+   */ 
   async setVolume(amount: number) {
     if (!this.connection?.dispatcher)
       throw new TypeError('Player is not playing anything.');
@@ -110,7 +123,9 @@ export class Player {
     this.connection?.dispatcher.resume();
   }
 
-  /** Skip one or more tracks. */
+  /** Skip one or more tracks.
+   * @param count Number of tracks to skip.
+  */
   async skip(count = 1) {
     if (count > this.q.length)
       throw new TypeError('Not enough items to skip.');
@@ -121,8 +136,7 @@ export class Player {
     
     for (let i = 0; i < count; i++)     
       this.q.dequeue();
-      
-    console.log(this.q);    
+  
     await this.playTrack(this.q.peek());
   }
 }
@@ -130,6 +144,7 @@ export class Player {
 export interface PlayerOptions {
   textChannel: TextChannel;
   voiceChannel: VoiceChannel;
+  guildId?: string;
 }
 
-export type Track = VideoSearchResult;
+export type Track = { requestor?: GuildMember } & VideoSearchResult;

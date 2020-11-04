@@ -3,7 +3,6 @@
   "compilerOptions": {
     "declaration": true,
     "downlevelIteration": true,
-    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "lib": ["es2020"],
@@ -15,5 +14,6 @@
     "strictNullChecks": false,
     "target": "ES5",
     "watch": true
-  }
+  },
+  "include": ["src"]
 }
