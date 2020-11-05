@@ -1,12 +1,12 @@
 {
   "name": "2pg-music",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Discord.js music used for 2PG",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "typedoc --out docs src --theme docs-theme"
+    "docs": "typedoc --out docs src --theme docs-theme && touch docs/.nojekyll"
   },
   "repository": {
     "type": "git",
