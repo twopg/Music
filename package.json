@@ -6,7 +6,7 @@
   "types": "lib/main.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "typedoc --out docs src --theme docs-theme && touch docs/.nojekyll"
+    "docs": "typedoc --out docs src --theme docs-theme"
   },
   "repository": {
     "type": "git",
