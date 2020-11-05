@@ -1,5 +1,5 @@
 import searchYT, { VideoSearchResult } from 'yt-search';
-import downloadYT from 'ytdl-core';
+import downloadYT from 'discord-ytdl-core';
 import { GuildMember, TextChannel, VoiceChannel, VoiceConnection } from 'discord.js';
 import Q from './q';
 import { emitter } from './events';
@@ -17,7 +17,7 @@ export class Player {
   get isPaused() {
     return this.connection?.dispatcher.paused;
   }
-  /** Position in ms of current track. */
+  /** The time (in milliseconds) that the track has been playing audio for. */
   get position() {
     return this.connection?.dispatcher.streamTime;
   }
@@ -47,6 +47,9 @@ export class Player {
 
   /** Join a voice channel. */
   async join() {
+    if (!this.voiceChannel.joinable)
+      throw new TypeError(`Channel is not joinable.`);
+
     this.connection = await this.options.voiceChannel.join();
   }
 
@@ -66,6 +69,7 @@ export class Player {
   }
   
   /** Play track from YouTube.
+   * If a track is already playing, it will be queued.
    * @param query Term to search YouTube for tracks.
    * @param requestor Guild member who requested to play this track.
   */
@@ -74,9 +78,8 @@ export class Player {
     if (videos.length <= 0)
       throw new TypeError('No results found.');
 
-    await this.join();
-
-    const track = videos[0];
+    const track: Track = videos[0];
+    track.requestor = requestor;
     this.q.enqueue(track);
 
     if (!this.isPlaying)
@@ -84,21 +87,37 @@ export class Player {
 
     return track;
   }
-  private async playTrack(track: Track) {
-    const stream = downloadYT(track.url, { filter: 'audioonly' });
-    this.connection?.play(stream, { seek: 0, volume: 1 });
+  private async playTrack(track: Track, seek = 0) {
+    await this.join();
+
+    const stream = downloadYT(track.url, { fmt: "mp3", filter: 'audioonly' });
     
-    emitter.emit('trackStart', this, track);
+    this.connection?.play(stream, { seek, volume: 1 });
+    
+    if (seek <= 0)
+      emitter.emit('trackStart', this, track);
+
+    return track;
   }
 
   /** Set volume of player.
-   * @param amount Value from 0 - 200.
+   * @param amount Value from 0 - 1.
    */ 
   async setVolume(amount: number) {
-    if (!this.connection?.dispatcher)
+    if (!this.isPlaying)
       throw new TypeError('Player is not playing anything.');
 
     this.connection.dispatcher.setVolume(amount);
+  }
+
+  /** Move position in current playing track.
+   * @param position Time (in seconds) to seek to.
+   */ 
+  async seek(position: number) {
+    if (!this.isPlaying)
+      throw new TypeError('Player is not playing anything.');
+
+    await this.playTrack(this.q.peek(), position);
   }
 
   /** Stop playing and clear queue. */
@@ -123,7 +142,7 @@ export class Player {
     this.connection?.dispatcher.resume();
   }
 
-  /** Skip one or more tracks.
+  /** Skip one or more tracks, and return track to play.
    * @param count Number of tracks to skip.
   */
   async skip(count = 1) {
@@ -137,7 +156,7 @@ export class Player {
     for (let i = 0; i < count; i++)     
       this.q.dequeue();
   
-    await this.playTrack(this.q.peek());
+    return this.playTrack(this.q.peek());
   }
 }
 

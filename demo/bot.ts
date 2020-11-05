@@ -1,8 +1,10 @@
-import { Client, TextChannel } from 'discord.js';
+import { Client } from 'discord.js';
 import { MusicClient, Player, Track } from '../src/music/client';
+import { MusicCommands } from './commands';
 
 const bot = new Client();
 const music = new MusicClient();
+const commands = new MusicCommands(music);
 
 music.on('trackStart', (player: Player, track: Track) => player.textChannel.send(`**${track.title}** started.`));
 music.on('queueEnd', (player: Player) => player.textChannel.send(`Queue has ended.`));
@@ -10,31 +12,17 @@ music.on('queueEnd', (player: Player) => player.textChannel.send(`Queue has ende
 bot.on('message', async (msg) => {
   if (msg.author.bot) return;
 
-  let player = music.players.get(msg.guild.id);
-  if (!player)
-    player = music.create(msg.guild.id, {
-      textChannel: msg.channel as TextChannel,
-      voiceChannel: msg.member.voice.channel
-    });
-
   try {
-    if (msg.content.startsWith('.play ')) {
-      const query = msg.content.split('.play ')[1];
-      const track = await player.play(query);
-
-      msg.channel.send(`**${track.title}** added to queue.`);
-    }
+    if (msg.content.startsWith('.play '))
+      await commands.play(msg);
+    if (msg.content.startsWith('.seek '))
+      await commands.seek(msg);
     else if (msg.content === '.stop')
-      await player.stop();
-    else if (msg.content === '.q') {
-      const details = player.q.items
-        .map(track => track.title)
-        .join('\n');
-      
-      msg.channel.send(`**Queue**:\n` + details);
-    }
+      await commands.stop(msg);
+    else if (msg.content === '.q')
+      await commands.q(msg);
     else if (msg.content === '.skip')
-      await player.skip();
+      await commands.skip(msg);
   } catch (error) {
     msg.reply(error?.message);
   }
@@ -42,4 +30,4 @@ bot.on('message', async (msg) => {
 
 bot.on('ready', () => console.log('Bot logged in!'))
 
-bot.login('<your_bot_token>');
+bot.login('NTMzOTQ3MDAxNTc4OTc5MzI4.XDsK5Q.N1OmFWzEwRcoQc0BRoUNCC1v3LE');
