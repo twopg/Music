@@ -1,5 +1,5 @@
 {
-  "name": "2pg-music",
+  "name": "@2pg/music",
   "version": "1.1.2",
   "description": "Discord.js music used for 2PG",
   "main": "lib/main.js",
@@ -8,9 +8,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "typedoc --out docs src --theme docs-theme"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://twopg.github.io/music",
   "repository": {
     "type": "git",
-    "url": "https://github.com/theADAMJR/2PG-Music.git"
+    "url": "https://github.com/twopg/music.git"
   },
   "declaration": true,
   "private": false,
