@@ -35,3 +35,5 @@ function getPlayer(msg) {
 
 bot.login('<your_bot_token>');
 ```
+
+[![Discord](https://img.shields.io/discord/685862664223850497?color=46828d&label=Support&style=for-the-badge)](https://discord.io/twopg)
