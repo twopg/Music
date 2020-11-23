@@ -11,7 +11,7 @@ export class Player {
 
   /** Whether the queue is not empty and audio is being emitted. */
   get isPlaying() {
-    return !this.q.isEmpty && this.connection?.dispatcher;
+    return !(this.q.isEmpty || this.isPaused);
   }
   /** Whether the player is paused or not. */
   get isPaused() {
@@ -47,7 +47,7 @@ export class Player {
 
   /** Join a voice channel. */
   async join() {
-    if (!this.voiceChannel.joinable)
+    if (!this.voiceChannel?.joinable)
       throw new TypeError(`Channel is not joinable.`);
 
     this.connection = await this.options.voiceChannel.join();
@@ -124,9 +124,6 @@ export class Player {
 
   /** Stop playing and clear queue. */
   async stop() {
-    if (!this.isPlaying)
-      throw new TypeError('Player is already stopped.');
-
     this.connection?.disconnect();
 
     while (!this.q.isEmpty)
