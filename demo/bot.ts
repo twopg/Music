@@ -30,4 +30,4 @@ bot.on('message', async (msg) => {
 
 bot.on('ready', () => console.log('Bot logged in!'))
 
-bot.login('NzUxNDkzODI5MjAyNDExNzAw.X1J5Kg.Y7IhNLC4SMNUVR_eq5nu374UXrM');
+bot.login('<your_bot_token>');
