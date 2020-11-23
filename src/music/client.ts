@@ -27,7 +27,7 @@ export class MusicClient {
         .set(guildId, new Player({ guildId, ...options }))
         .get(guildId) as Player;
   }
-  /** Get or create a player for a guild.
+  /** Get a player for a guild.
    * @param guildId Guild ID of the player.
   */
   get(guildId: string): Player {

@@ -18,7 +18,7 @@ export class MusicCommands {
 
     await player.seek(position);
 
-    await msg.channel.send(`**${player.q.peek().title}** is now at \`${player.position}s\`.`);
+    await msg.channel.send(`**${player.q.peek().title}** is now at \`${position}s\`.`);
   }
 
   async q(msg: Message) {

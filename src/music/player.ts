@@ -19,7 +19,7 @@ export class Player {
   }
   /** The time (in milliseconds) that the track has been playing audio for. */
   get position() {
-    return this.connection?.dispatcher.streamTime;
+    return this.connection?.dispatcher.totalStreamTime;
   }
 
   /** Text channel that the player is connected to. */
@@ -90,7 +90,7 @@ export class Player {
   private async playTrack(track: Track, seek = 0) {
     await this.join();
 
-    const stream = downloadYT(track.url, { fmt: "mp3", filter: 'audioonly' });
+    const stream = downloadYT(track.url, { fmt: 'mp3', filter: 'audioonly' });
     
     this.connection?.play(stream, { seek, volume: 1 });
     
@@ -116,6 +116,8 @@ export class Player {
   async seek(position: number) {
     if (!this.isPlaying)
       throw new TypeError('Player is not playing anything.');
+    if (position >= this.q.peek().duration.seconds)
+      throw new TypeError('Position is longer than track duration.');
 
     await this.playTrack(this.q.peek(), position);
   }

@@ -6,8 +6,8 @@ const bot = new Client();
 const music = new MusicClient();
 const commands = new MusicCommands(music);
 
-music.on('trackStart', (player: Player, track: Track) => player.textChannel.send(`**${track.title}** started.`));
-music.on('queueEnd', (player: Player) => player.textChannel.send(`Queue has ended.`));
+music.on('trackStart', (player: Player, track: Track) => player.textChannel?.send(`**${track.title}** started.`));
+music.on('queueEnd', (player: Player) => player.textChannel?.send(`Queue has ended.`));
 
 bot.on('message', async (msg) => {
   if (msg.author.bot) return;
@@ -30,4 +30,4 @@ bot.on('message', async (msg) => {
 
 bot.on('ready', () => console.log('Bot logged in!'))
 
-bot.login('<your_bot_token>');
+bot.login('NzUxNDkzODI5MjAyNDExNzAw.X1J5Kg.Y7IhNLC4SMNUVR_eq5nu374UXrM');
