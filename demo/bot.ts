@@ -24,10 +24,10 @@ bot.on('message', async (msg) => {
     else if (msg.content === '.skip')
       await commands.skip(msg);
   } catch (error) {
-    msg.reply(error?.message);
+    await msg.reply(error?.message);
   }
 });
 
 bot.on('ready', () => console.log('Bot logged in!'))
 
-bot.login('<your_bot_token>');
+bot.login('NzUxNDkzODI5MjAyNDExNzAw.X1J5Kg.f80jQ1I13zZw2BbZWtCgalPhFIM');

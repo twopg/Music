@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import Q from '../../src/music/q';
 
-describe('q', () => {
+describe('music/q', () => {
   let q: Q<any>;
 
   beforeEach(() => q = new Q<any>());

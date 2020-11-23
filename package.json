@@ -1,6 +1,6 @@
 {
   "name": "@2pg/music",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Discord.js music used for 2PG",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
@@ -36,8 +36,11 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",
+    "@types/chai-spies": "^1.0.2",
     "@types/mocha": "^8.0.4",
     "chai": "^4.2.0",
+    "chai-events": "0.0.3",
+    "chai-spies": "^1.0.0",
     "discord.js": "^12.4.1",
     "mocha": "^8.2.1",
     "ts-mocha": "^8.0.0",

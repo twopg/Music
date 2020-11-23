@@ -11,15 +11,15 @@ export class Player {
 
   /** Whether the queue is not empty and audio is being emitted. */
   get isPlaying() {
-    return !(this.q.isEmpty || this.isPaused);
+    return !this.q.isEmpty;
   }
   /** Whether the player is paused or not. */
   get isPaused() {
-    return this.connection?.dispatcher.paused;
+    return this.connection?.dispatcher?.paused;
   }
   /** The time (in milliseconds) that the track has been playing audio for. */
   get position() {
-    return this.connection?.dispatcher.totalStreamTime;
+    return this.connection?.dispatcher?.totalStreamTime;
   }
 
   /** Text channel that the player is connected to. */
@@ -55,20 +55,14 @@ export class Player {
 
   /** Leave a voice channel. */
   async leave() {
-    this.stop();
+    await this.stop();
 
     this.options.voiceChannel.leave();
     this.options.voiceChannel = null;
     this.connection = null;
   }
-
-  /** Move player to another channel. */
-  async move(voiceChannel: VoiceChannel) {
-    await voiceChannel.join();
-    this.options.voiceChannel = voiceChannel;
-  }
   
-  /** Play track from YouTube.
+  /** Joins a channel, then plays a track from YouTube.
    * If a track is already playing, it will be queued.
    * @param query Term to search YouTube for tracks.
    * @param requestor Guild member who requested to play this track.
@@ -81,9 +75,9 @@ export class Player {
     const track: Track = videos[0];
     track.requestor = requestor;
     this.q.enqueue(track);
-
-    if (!this.isPlaying)
-      this.playTrack(track);
+    
+    if (this.q.length <= 1)
+      await this.playTrack(track);
 
     return track;
   }
@@ -91,7 +85,6 @@ export class Player {
     await this.join();
 
     const stream = downloadYT(track.url, { fmt: 'mp3', filter: 'audioonly' });
-    
     this.connection?.play(stream, { seek, volume: 1 });
     
     if (seek <= 0)
