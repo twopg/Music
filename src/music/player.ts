@@ -4,6 +4,8 @@ import { GuildMember, TextChannel, VoiceChannel, VoiceConnection } from 'discord
 import Q from './q';
 import { emitter } from './events';
 
+import { joinVoiceChannel } from '@discordjs/voice';
+
 export class Player {  
   readonly q = new Q<Track>();
 
@@ -50,7 +52,11 @@ export class Player {
     if (!this.voiceChannel?.joinable)
       throw new TypeError(`Channel is not joinable.`);
 
-    this.connection = await this.options.voiceChannel.join();
+    this.connection = await joinVoiceChannel({
+      channelId: this.voiceChannel.id,
+      guildId: this.voiceChannel.guild.id,
+      adapterCreator: this.voiceChannel.guild.voiceAdapterCreator
+    });
   }
 
   /** Leave a voice channel. */
