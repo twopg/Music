@@ -3,7 +3,7 @@ Simple music module, built with TypeScript, used by 2PG.
 
 > This package was made as a proof-of-concept and is no longer maintained. Please consider using [alternatives](https://www.npmjs.com/search?q=discord%20music).
 
-[![Discord](https://img.shields.io/discord/685862664223850497?color=46828d&label=Support&style=for-the-badge)](https://discord.io/twopg)
+[![Discord](https://img.shields.io/discord/729699521386381372?color=46828d&label=Support&style=for-the-badge)](https://discord.io/adamjr)
 
 **Docs** - https://theadamjr.github.io/2pg-music
 
@@ -40,4 +40,4 @@ function getPlayer(msg) {
 bot.login('<your_bot_token>');
 ```
 
-[![Discord](https://img.shields.io/discord/685862664223850497?color=46828d&label=Support&style=for-the-badge)](https://discord.io/twopg)
+[![Discord](https://img.shields.io/discord/729699521386381372?color=46828d&label=Support&style=for-the-badge)](https://discord.io/adamjr)
